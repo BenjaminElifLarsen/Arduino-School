@@ -64,13 +64,20 @@ void loop() {
 
       XBeeAddress64 address64 = XBeeAddress64(msb,lsb);
       ZBTxRequest zbTx = ZBTxRequest(address64, payload, sizeof(payload));
-      display.println("pre send");
-      display.display();
+      display.println("");
       xbee.send(zbTx);
-      display.println("post-send");
       display.display();
-      if(xbee.readPacket(500)) {
+      if(xbee.readPacket(2500)) {
         display.println("got someting");
+        display.display();
+      }
+      else{
+        display.println("something went wrong");
+        for(int i = 0; i < sizeof(payload); i++) {
+          display.print((char)payload[i]);
+        }
+        display.println("");
+        display.println(xbee.getResponse().isError());
         display.display();
       }
     }  
