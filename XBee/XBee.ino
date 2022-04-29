@@ -1,5 +1,4 @@
 #include <XBee.h>
-#include <SoftwareSerial.h>
 
 #include <SPI.h>
 #include <Wire.h>
@@ -20,10 +19,6 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 XBee xbee = XBee();
 
-//SoftwareSerial xbee_ss(ssRX, ssTX);
-
-ZBRxIoSampleResponse ioSamples = ZBRxIoSampleResponse();
-
 ZBRxResponse rx = ZBRxResponse();
 
 
@@ -39,8 +34,6 @@ void setup() {
   delay(2000); 
   display.clearDisplay();
   display.display();
-  // put your setup code here, to run once:
-  //xbee_ss.begin(9600);
   xbee.setSerial(Serial);
   write("Ready");
 }
@@ -54,8 +47,8 @@ void loop() {
     if (xbee.getResponse().getApiId() == 144)
     {
       xbee.getResponse().getZBRxResponse(rx);
-      //write(String(rx.getRemoteAddress64().getLsb(), HEX));
-      //display.println(rx.getRemoteAddress64().getLsb(), HEX);
+      //write(String(rx.getRemoteAddress64().getMsb()));
+      //display.println(rx.getRemoteAddress64().getLsb());
       display.clearDisplay();
       display.setCursor(0,0);
       for(int i = 0; i < rx.getDataLength(); i++)
@@ -63,8 +56,23 @@ void loop() {
         display.print((char)rx.getData(i));
       }
       display.display();
-      //Serial.print("Expected I/O Sample, but got ");
-      //Serial.print(xbee.getResponse().getApiId(), DEC);
+
+      int msb = rx.getRemoteAddress64().getMsb();
+      int lsb = rx.getRemoteAddress64().getLsb();
+
+      uint8_t payload[] = {(uint8_t)'H',(uint8_t)'e',(uint8_t)'y'};
+
+      XBeeAddress64 address64 = XBeeAddress64(msb,lsb);
+      ZBTxRequest zbTx = ZBTxRequest(address64, payload, sizeof(payload));
+      display.println("pre send");
+      display.display();
+      xbee.send(zbTx);
+      display.println("post-send");
+      display.display();
+      if(xbee.readPacket(500)) {
+        display.println("got someting");
+        display.display();
+      }
     }  
     else{
       display.clearDisplay();
