@@ -1,0 +1,13 @@
+case:
+ generate data and transmit over to another location
+ measure temperature and humidity
+
+components: 
+  screen
+  xbee c
+  xbee r
+  led yellow
+  led green
+  led red
+  3 resistors
+  1 DHT11
