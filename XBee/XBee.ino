@@ -60,11 +60,11 @@ void loop() {
       int msb = rx.getRemoteAddress64().getMsb();
       int lsb = rx.getRemoteAddress64().getLsb();
 
-      uint8_t payload[] = {(uint8_t)'H',(uint8_t)'e',(uint8_t)'y'};
+      uint8_t payload[] = {(uint8_t)'H',(uint8_t)'i',};
 
       XBeeAddress64 address64 = XBeeAddress64(msb,lsb);
       ZBTxRequest zbTx = ZBTxRequest(address64, payload, sizeof(payload));
-      display.println("");
+      display.println(sizeof(payload));
       xbee.send(zbTx);
       display.display();
       if(xbee.readPacket(2500)) {
@@ -73,10 +73,6 @@ void loop() {
       }
       else{
         display.println("something went wrong");
-        for(int i = 0; i < sizeof(payload); i++) {
-          display.print((char)payload[i]);
-        }
-        display.println("");
         display.println(xbee.getResponse().isError());
         display.display();
       }
