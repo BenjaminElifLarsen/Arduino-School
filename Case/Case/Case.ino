@@ -20,6 +20,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 
 void setup() {
+  pinMode(REDLED,OUTPUT);
+  pinMode(YELLOWLED,OUTPUT);
+  pinMode(GREENLED,OUTPUT);
   Serial.begin(9600);
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
@@ -40,7 +43,7 @@ void loop() {
  float t = dht.readTemperature();
  display.clearDisplay();
  display.setCursor(0,0);
- display.println("DHT: ");
+ display.println("DHT: ");;
  if(!isnan(h)){
    display.print("  Huminity: ");
    display.println(h);
